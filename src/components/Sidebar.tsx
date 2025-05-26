@@ -1,5 +1,6 @@
 "use client"
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
+import { t, getCurrentLang, Lang } from './i18n';
 
 const genres = [
   { label: 'Action', count: 233 },
@@ -47,6 +48,18 @@ export default function Sidebar() {
   const [open, setOpen] = useState<{ [key: string]: boolean }>({})
   const [checked, setChecked] = useState<{ [key: string]: boolean }>({})
   const [hovered, setHovered] = useState<string | null>(null)
+  const [lang, setLang] = useState<Lang | undefined>(undefined);
+
+  useEffect(() => {
+    setLang(getCurrentLang());
+    
+    const handler = () => {
+      setLang(getCurrentLang());
+    };
+    
+    window.addEventListener("langchange", handler);
+    return () => window.removeEventListener("langchange", handler);
+  }, []);
 
   const handleToggle = (key: string) => {
     setOpen(prev => ({ ...prev, [key]: !prev[key] }))
@@ -55,22 +68,24 @@ export default function Sidebar() {
     setChecked(prev => ({ ...prev, [key]: !prev[key] }))
   }
 
+  if (!lang) return null;
+
   return (
     <aside className="min-w-[320px] max-w-[360px] bg-neutral-900 p-8 rounded-xl mr-8 transition-all border border-neutral-800">
       {/* 排序方式 */}
       <div className="mb-8">
-        <div className="font-bold text-xl mb-4">SORT BY</div>
+        <div className="font-bold text-xl mb-4">{t('sidebar.sort_by').toUpperCase()}</div>
         <div className="mb-4">
           <select className="w-full bg-neutral-900 border border-neutral-800 text-white rounded px-4 py-3 text-lg font-semibold">
-            <option>Most popular</option>
-            <option>Newest</option>
+            <option>{t('sidebar.most_popular')}</option>
+            <option>{t('sidebar.newest')}</option>
           </select>
         </div>
       </div>
       {/* GENRES 可展开复选框 */}
       <div className="border-t border-neutral-800 pt-6">
         <div className="flex items-center justify-between cursor-pointer select-none" onClick={() => handleToggle('genres')}>
-          <span className="font-bold text-lg">GENRES</span>
+          <span className="font-bold text-lg">{t('sidebar.genres').toUpperCase()}</span>
           <span className="text-2xl">{open.genres ? '▾' : '▸'}</span>
         </div>
         <div
@@ -102,7 +117,7 @@ export default function Sidebar() {
       {/* THEMES 可展开复选框 */}
       <div className="border-t border-neutral-800 pt-6">
         <div className="flex items-center justify-between cursor-pointer select-none" onClick={() => handleToggle('themes')}>
-          <span className="font-bold text-lg">THEMES</span>
+          <span className="font-bold text-lg">{t('sidebar.themes').toUpperCase()}</span>
           <span className="text-2xl">{open.themes ? '▾' : '▸'}</span>
         </div>
         <div
@@ -134,7 +149,7 @@ export default function Sidebar() {
       {/* PLATFORMS 可展开复选框 */}
       <div className="border-t border-neutral-800 pt-6">
         <div className="flex items-center justify-between cursor-pointer select-none" onClick={() => handleToggle('platforms')}>
-          <span className="font-bold text-lg">PLATFORMS</span>
+          <span className="font-bold text-lg">{t('sidebar.platforms').toUpperCase()}</span>
           <span className="text-2xl">{open.platforms ? '▾' : '▸'}</span>
         </div>
         <div

@@ -1,15 +1,24 @@
 "use client"
-import { t } from './i18n';
+import { t, getCurrentLang, Lang } from './i18n';
 import { useState, useEffect } from 'react';
 
 export default function Footer() {
   const [mounted, setMounted] = useState(false);
+  const [lang, setLang] = useState<Lang | undefined>(undefined);
 
   useEffect(() => {
     setMounted(true);
+    setLang(getCurrentLang());
+    
+    const handler = () => {
+      setLang(getCurrentLang());
+    };
+    
+    window.addEventListener("langchange", handler);
+    return () => window.removeEventListener("langchange", handler);
   }, []);
 
-  if (!mounted) {
+  if (!mounted || !lang) {
     // SSR 阶段或首次挂载前，渲染空内容或 loading 占位，保证一致性
     return null;
   }
