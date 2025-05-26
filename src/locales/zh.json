@@ -1,0 +1,41 @@
+{
+  "header": {
+    "games": "游戏",
+    "screenshots": "截图",
+    "articles": "文章",
+    "about": "关于",
+    "search": "搜索...",
+    "mockup": "线框稿",
+    "lang": "中文"
+  },
+  "footer": {
+    "developed_by": "开发商：",
+    "published_by": "发行商：",
+    "cookie_policy": "Cookie 政策",
+    "copyright": "版权投诉",
+    "privacy_policy": "隐私政策",
+    "terms": "条款与条件",
+    "desc": "探索丰富的视频游戏界面，寻找你的设计灵感。",
+    "trademark": "视频游戏、图片、所有商标及注册商标均归其各自所有者所有。"
+  },
+  "sidebar": {
+    "sort_by": "排序方式",
+    "most_popular": "最受欢迎",
+    "newest": "最新",
+    "genres": "类型",
+    "themes": "主题",
+    "platforms": "平台"
+  },
+  "comments": {
+    "title": "评论区",
+    "name": "名称",
+    "email": "邮箱",
+    "content": "写下你的评论...",
+    "anonymous": "匿名评论",
+    "publish": "发布",
+    "cancel": "取消",
+    "reply": "回复",
+    "placeholder": "写下你的评论...",
+    "empty": "暂无评论"
+  }
+} 

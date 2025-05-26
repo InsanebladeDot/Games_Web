@@ -1,0 +1,41 @@
+{
+  "header": {
+    "games": "Games",
+    "screenshots": "Screenshots",
+    "articles": "Articles",
+    "about": "About",
+    "search": "Search...",
+    "mockup": "Wireframe Mockup",
+    "lang": "EN"
+  },
+  "footer": {
+    "developed_by": "Developed by:",
+    "published_by": "Published by:",
+    "cookie_policy": "Cookie policy",
+    "copyright": "Copyright complaints",
+    "privacy_policy": "Privacy policy",
+    "terms": "Terms and conditions",
+    "desc": "Explore a collection of video games interfaces and find inspiration for your designs.",
+    "trademark": "Video games, pictures, all trademarks, and registered trademarks are the property of their respective owners."
+  },
+  "sidebar": {
+    "sort_by": "Sort by",
+    "most_popular": "Most popular",
+    "newest": "Newest",
+    "genres": "Genres",
+    "themes": "Themes",
+    "platforms": "Platforms"
+  },
+  "comments": {
+    "title": "Comments",
+    "name": "Name",
+    "email": "Email",
+    "content": "Write your comment...",
+    "anonymous": "Anonymous",
+    "publish": "Publish",
+    "cancel": "Cancel",
+    "reply": "Reply",
+    "placeholder": "Write your comment...",
+    "empty": "No comments yet"
+  }
+} 

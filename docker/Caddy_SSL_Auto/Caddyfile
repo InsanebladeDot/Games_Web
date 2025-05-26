@@ -1,0 +1,3 @@
+becausekissesmatter.com {
+    reverse_proxy my-springboot-app:8081
+}

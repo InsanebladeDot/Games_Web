@@ -1,0 +1,16 @@
+services:
+  springboot-app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: my-springboot-app
+    ports:
+      - "8081:8081"
+    networks:
+      - default
+      - caddy-network
+
+networks:
+  default:
+  caddy-network:
+    external: true
