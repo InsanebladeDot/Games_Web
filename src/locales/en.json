@@ -37,5 +37,8 @@
     "reply": "Reply",
     "placeholder": "Write your comment...",
     "empty": "No comments yet"
+  },
+  "similar_games": {
+    "title": "Similar games"
   }
 } 

@@ -74,7 +74,7 @@ function GameImg({ src, alt }: { src: string; alt: string }) {
   );
 }
 
-export default function SimilarGames({ title = "Similar games" }: SimilarGamesProps) {
+export default function SimilarGames({ title }: SimilarGamesProps) {
   const ref = useRef<HTMLDivElement>(null)
   const [RadomGames, setRadomGames] = useState<Games[]>([])
   const router = useRouter()
@@ -94,7 +94,10 @@ export default function SimilarGames({ title = "Similar games" }: SimilarGamesPr
   useEffect(()=>{
     getGameRadom().then(res=>{
       console.log("随机游戏",res.data)
-      setRadomGames(res.data.data || [])
+      setRadomGames(res.data?.data || [])
+    }).catch(err => {
+      console.error("获取随机游戏失败", err)
+      setRadomGames([])
     })
   },[])
 
@@ -119,7 +122,7 @@ export default function SimilarGames({ title = "Similar games" }: SimilarGamesPr
   return (
     <section>
       <div className="flex items-center mb-4">
-        <h2 className="flex-1 text-xl font-bold">{title}</h2>
+        <h2 className="flex-1 text-xl font-bold">{title || t('similar_games.title')}</h2>
         <button className="bg-neutral-800 text-white rounded-full w-8 h-8 mx-2" onClick={() => scroll(-1)}>&lt;</button>
         <button className="bg-neutral-800 text-white rounded-full w-8 h-8 mx-2" onClick={() => scroll(1)}>&gt;</button>
       </div>
