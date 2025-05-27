@@ -16,7 +16,7 @@ export default function GameCard(props: Games) {
     setImgError(false);
   }, [props.logo]);
   const handleClick = () => {
-    router.push(`/games?id=${props.id}&title=${props.title}&gameUrl=${props.gameUrl}&logo=${props.logo}&description=${props.description}&genre=${props.genre}&releaseDate=${props.releaseDate}&open=${props.open}`)
+    router.push(`/home?id=${props.id}&title=${props.title}&gameUrl=${props.gameUrl}&logo=${props.logo}&description=${props.description}&genre=${props.genre}&releaseDate=${props.releaseDate}&open=${props.open}`)
   }
   return (
     <div

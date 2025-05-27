@@ -32,7 +32,7 @@ export default function Header() {
           <Image src="https://interfaceingame.com/wp-content/themes/interface-in-game/dist/assets/static/images/logo.svg" alt="logo" width={40} height={40} className="w-10 mr-4 cursor-pointer" unoptimized />
         </Link>
         <nav className="flex flex-wrap items-center">
-          <Link className="mx-2 md:mx-4" href="/gameList">{t('header.games')}</Link>
+          <Link className="mx-2 md:mx-4" href="/gamelist">{t('header.games')}</Link>
           <Link className="mx-2 md:mx-4" href="/screenshots">{t('header.screenshots')}</Link>
           <Link className="mx-2 md:mx-4" href="/articles">{t('header.articles')}</Link>
           <Link className="mx-2 md:mx-4" href="/about">{t('header.about')}</Link>
