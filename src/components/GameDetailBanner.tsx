@@ -37,7 +37,7 @@ export default function GameDetailBanner({
         {/* 左侧封面图 */}
         <div className="w-[130px] h-[180px] mr-6 rounded-md overflow-hidden border-2 border-white/20 shadow-lg flex-shrink-0">
           <Image 
-            src={cover} 
+            src={cover || 'notFund.png'} 
             alt={title}
             width={260}
             height={360}

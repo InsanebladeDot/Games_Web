@@ -19,3 +19,27 @@ html, body {
   background-repeat: no-repeat;
   background-color: transparent;
 }
+
+@keyframes fadein {
+  from { opacity: 0; transform: translateY(-10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.animate-fadein {
+  animation: fadein 0.5s;
+}
+.line-clamp-3 {
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* 让 md-editor-rt 预览和目录背景透明 */
+.md-editor-preview,
+.md-editor-catalog,
+.md-editor-dark,
+.md-editor-dark .md-editor-preview,
+.md-editor-dark .md-editor-catalog {
+  background: transparent !important;
+  box-shadow: none !important;
+}

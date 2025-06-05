@@ -1,14 +1,11 @@
 'use client'
-import { use} from "react";
-import Sidebar from '@/components/Sidebar'
-import GameDetailBanner from '@/components/GameDetailBanner'
-import GamePosterDetail from '@/components/GamePosterDetail'
+import { use } from "react";
 import GameComments from '@/components/GameComments'
 import GameTips from '@/components/GameTips'
 import GameIntro from '@/components/home/GameIntro'
 import SimilarGames from '@/components/SimilarGames'
-import type { Games } from '@/types/games'
-import dayjs from "dayjs";
+import type { Game } from '@/types/games'
+import GameCard from '@/components/GameCard'
 
 interface ParamsType {
   name: string
@@ -18,36 +15,35 @@ export default function GameDetail({
   searchParams
 }: {
   params: Promise<ParamsType>,
-  searchParams: Promise<Games>
+  searchParams: Promise<Game>
 }) {
-  const { id, title, gameUrl, logo, description, genre, releaseDate } = use(searchParams);
-  // mock 数据，实际可根据name查找
-  const gameDetail = {
-    name:title,
-    img: logo,
-    date: dayjs(releaseDate).format('YYYY年M月D日'),
-    tags: ["Action", "Adventure", "Indie", "Platformer"],
-    desc: description
-    };
+
+  const { 
+    id, 
+    developerId, 
+    title, 
+    logo, 
+    gameUrl, 
+    genre, 
+    open, 
+    releaseDate, 
+    description, 
+    recommendedVideos, 
+    gameIntroduction,
+    downloadLink
+  } = use(searchParams);  // mock 数据，实际可根据name查找
+  
   return (
     <div className="min-h-screen bg-black text-white">
       {/* 顶部 Banner */}
-      <div className="w-full pt-[84px]">
-        <GameDetailBanner 
-          title={title}
-          releaseDate={dayjs(releaseDate).format('MMMM D, YYYY')}
-          genres={genre ? genre.split(',') : ["Action", "Adventure"]}
-          platform="PC / Console"
-          cover={logo}
-          bannerImage={logo}
-        />
-      </div>
 
-      {/* 主体区域：Sidebar + 内嵌游戏 */}
+      {/* 主体区域：GameCard + 内嵌游戏 */}
       <div id="game-embed-section" className="w-full flex flex-col md:flex-row px-5 mt-8 items-start">
-        <Sidebar />
+        <div className="hidden md:block md:min-w-[320px] md:max-w-[360px] md:mr-8">
+          <GameCard {...{id, title, gameUrl, logo, description, genre, releaseDate, developerId, open, recommendedVideos,gameIntroduction,downloadLink}} />
+        </div>
         <div className="flex-1 ml-0 md:ml-6 lg:ml-8 flex flex-col justify-center min-h-[600px] w-full" style={{paddingRight: '0px', paddingLeft: '0px'}}>
-          {gameUrl ? (
+          {gameUrl && gameUrl !== '' ? (
             <div className="w-full md:w-[90%] lg:w-[85%] xl:w-[80%] mx-auto h-0 pb-[56.25%] md:pb-[50.625%] lg:pb-[47.8125%] xl:pb-[45%] relative">
               <iframe
                 src={gameUrl}
@@ -111,21 +107,17 @@ export default function GameDetail({
         </div>
       </div>
 
-      {/* 海报详情 */}
-      <div className="w-full px-5 mt-8">
-        <GamePosterDetail {...gameDetail} />
-      </div>
 
       {/* 评论区 */}
       <div className="w-full px-5 mt-8">
-        <GameComments gameId={id} />
+        <GameComments gameId={id || 0} />
       </div>
       
-        <GameIntro title={title} description={description} />
+      <GameIntro title={title} description={description} recommendedVideos={recommendedVideos} id={null} developerId={null} logo={""} gameUrl={""} genre={genre} open={open} releaseDate={""} gameIntroduction={""} downloadLink={gameUrl} />
 
       {/* 游戏指南 */}
       <div className="w-full bg-gray-950 py-8 mt-8">
-        <GameTips gameId={id} gameUrl={gameUrl}/>
+        <GameTips  gameUrl={gameUrl} downloadLink={downloadLink} id={null} developerId={null} title={""} logo={""} genre={""} open={false} releaseDate={""} description={description} recommendedVideos={""} gameIntroduction={gameIntroduction}/>
       </div>
         
       {/* 其他游戏推荐 */}

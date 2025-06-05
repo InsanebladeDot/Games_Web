@@ -1,23 +1,42 @@
 "use client"
+import React from 'react'
 import { useRouter } from 'next/navigation'
 import { useState, useEffect } from 'react'
 import Image from 'next/image'
-import type { Games } from '@/types/games'
+import type { Game } from '@/types/games'
 
 
 
-export default function GameCard(props: Games) {
+export default function GameCard(props: Game) {
   const [hover, setHover] = useState(false)
   const [imgError, setImgError] = useState(false)
   const router = useRouter()
   const date = "FEBRUARY 24, 2017";
   const tags = ['Action', 'Adventure', 'RPG'];
+  const [descExpand, setDescExpand] = useState(false)
   useEffect(() => {
     setImgError(false);
   }, [props.logo]);
+
+  //卡片点击跳转其他路由逻辑
   const handleClick = () => {
-    router.push(`/home?id=${props.id}&title=${props.title}&gameUrl=${props.gameUrl}&logo=${props.logo}&description=${props.description}&genre=${props.genre}&releaseDate=${props.releaseDate}&open=${props.open}`)
+    const params = new URLSearchParams({
+      id: String(props.id ?? ''),
+      title: props.title ?? '',
+      gameUrl: props.gameUrl ?? '',
+      logo: props.logo ?? '',
+      description: props.description ?? '',
+      genre: props.genre ?? '',
+      releaseDate: props.releaseDate ?? '',
+      open: String(props.open ?? ''),
+      recommendedVideos: props.recommendedVideos ?? '',
+      gameIntroduction: props.gameIntroduction ?? '',
+      downloadLink: props.downloadLink ?? ''
+    });
+  
+    router.push(`/home?${params.toString()}`, { scroll: false });
   }
+
   return (
     <div
       className="relative bg-black rounded-lg overflow-hidden border border-neutral-700 transition-all cursor-pointer shadow-lg flex flex-col"
@@ -34,7 +53,7 @@ export default function GameCard(props: Games) {
             </div>
           )}
           <Image
-            src={props.logo}
+            src={props.logo ||'notFund.png'}
             alt={props.title}
             width={320}
             height={420}
@@ -56,11 +75,27 @@ export default function GameCard(props: Games) {
       <div className="w-full bg-neutral-900 p-5 flex flex-col items-start border-t border-neutral-800">
         <div className="text-lg font-semibold text-white mb-1 truncate w-full" title={props.title}>{props.title}</div>
         <div className="text-xs text-neutral-400 mb-3">{date}</div>
-        <div className="flex flex-wrap gap-2">
+        <div className="flex flex-wrap gap-2 mb-3">
             { tags.map((t, i) => (
               <span key={i} className="bg-neutral-900 border border-neutral-700 text-xs text-white rounded px-3 py-1 font-semibold tracking-wide">{t}</span>
             ))}
+        </div>
+        {props.description && (
+          <div className={`w-full text-base text-neutral-200 mt-4 font-serif leading-relaxed transition-all duration-300 ${descExpand ? '' : 'line-clamp-3 overflow-hidden'}`} style={{textIndent: '2em'}}>
+            {props.description.split('。').filter(Boolean).map((s, i, arr) => (
+              <span key={i}>{s}{i < arr.length - 1 ? '。' : ''}<br/></span>
+            ))}
           </div>
+        )}
+        {props.description && props.description.split('。').filter(Boolean).length > 3 && (
+          <button
+            className="mt-2 flex items-center text-neutral-400 hover:text-white transition-colors duration-200 text-sm"
+            onClick={e => { e.stopPropagation(); setDescExpand(v => !v); }}
+          >
+            <span>{descExpand ? '收起' : '展开更多'}</span>
+            <svg className={`ml-1 w-4 h-4 transition-transform duration-300 ${descExpand ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path d="M19 9l-7 7-7-7"/></svg>
+          </button>
+        )}
       </div>
       <div className="absolute top-4 right-4 z-10" style={{display: hover ? 'block' : 'none'}}>
         <svg width="36" height="36" viewBox="0 0 36 36" fill="none">

@@ -1,13 +1,15 @@
-// src/types/games.ts
-
-export interface Games {
-    id: number;
-    developerId: number;
-    title: string;
-    logo: string;
-    gameUrl: string;
-    genre: string;
-    releaseDate: string; // 建议用 string，后端 LocalDateTime 通常会转成字符串
-    description: string;
-    open: boolean;
-  }
+/** 游戏接口定义 */
+export interface Game {
+  id: number | null;
+  developerId: number | null;
+  title: string;
+  logo: string;
+  gameUrl: string;
+  genre: string;
+  open: boolean;
+  releaseDate: string;
+  description: string;
+  recommendedVideos: string;
+  gameIntroduction: string;
+  downloadLink: string;
+}
