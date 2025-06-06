@@ -13,3 +13,5 @@ export interface Game {
   gameIntroduction: string;
   downloadLink: string;
 }
+
+export default Game;

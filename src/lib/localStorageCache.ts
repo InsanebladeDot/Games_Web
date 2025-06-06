@@ -88,3 +88,11 @@ export function removeCachedItem(key: string): void {
 //     console.error("Error clearing all local storage cache:", error);
 //   }
 // }
+
+const localStorageCache = {
+  setCachedItem,
+  getCachedItem,
+  removeCachedItem
+};
+
+export default localStorageCache;

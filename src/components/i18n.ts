@@ -116,4 +116,14 @@ export function syncLangWithUrl() {
       window.dispatchEvent(new Event('langchange'));
     }
   }
-} 
+}
+
+const i18n = {
+  t,
+  getLang,
+  changeLanguage,
+  getCurrentLang,
+  syncLangWithUrl
+};
+
+export default i18n; 

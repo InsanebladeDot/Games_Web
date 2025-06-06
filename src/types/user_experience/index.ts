@@ -10,3 +10,5 @@ export interface GameExperience {
   gameId: number | null; // Optional: link to a specific game
   createdAt: string; // Optional: timestamp of submission
 }
+
+export default GameExperience;
