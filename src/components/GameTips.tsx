@@ -34,7 +34,9 @@ export default function GameTips({gameUrl, downloadLink, gameIntroduction}: Game
 
   return (
     <section className="w-full mt-8 mb-10 max-w-5xl mx-auto px-3">
-      <MdEditor markdownText={gameIntroduction} />
+      {gameIntroduction ? (
+        <MdEditor markdownText={gameIntroduction} />
+      ) : null}
       
       {/* 下载部分 */}
       <div className="mt-16 text-center">

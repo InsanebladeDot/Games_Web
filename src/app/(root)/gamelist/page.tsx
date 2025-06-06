@@ -7,6 +7,7 @@ import { getGames } from '@/app/api/games'
 import { useState, useEffect } from 'react';
 import type { Game } from '@/types/games'
 import { getCachedItem, setCachedItem } from '@/lib/localStorageCache';
+import { t, getCurrentLang } from '@/components/i18n'
 
 // 定义一个用于存储游戏列表的缓存键名
 const GAMES_CACHE_KEY = 'cachedGamesList';
@@ -41,6 +42,14 @@ export default function GameListPage() {
     }
 
     setMounted(true);
+
+    // 监听语言变化
+    const handleLangChange = () => {
+      getCurrentLang(); // 更新当前语言，但不需要存储
+    };
+    
+    window.addEventListener("langchange", handleLangChange);
+    return () => window.removeEventListener("langchange", handleLangChange);
   }, []);
 
   // 分页逻辑
@@ -62,10 +71,10 @@ export default function GameListPage() {
           <Sidebar />
           <main className="flex-1">
             <section className="mb-8 mt-6">
-              <h3 className="text-2xl font-bold mb-6 text-green-500">热门游戏推荐</h3>
+              <h3 className="text-2xl font-bold mb-6 text-green-500">{t('games.popularGames')}</h3>
               {/* 分页控件 */}
               <div className="flex items-center gap-2 mb-4">
-                <span>共 {total} 条记录</span>
+                <span>{t('games.totalRecords')}: {total}</span>
                 <select
                   className="ml-2 px-2 py-1 rounded bg-neutral-800 text-white border-none focus:ring-2 focus:ring-blue-500 focus:outline-none shadow-none"
                   value={pageSize}
@@ -80,7 +89,7 @@ export default function GameListPage() {
                       value={size}
                       className="bg-neutral-800 text-white"
                     >
-                      {size}条/页
+                      {t('games.itemsPerPage', { count: size })}
                     </option>
                   ))}
                 </select>
@@ -88,12 +97,12 @@ export default function GameListPage() {
                   className="px-2 py-1 rounded bg-neutral-800 disabled:opacity-50"
                   onClick={() => setCurrentPage(1)}
                   disabled={currentPage === 1}
-                >首页</button>
+                >{t('games.firstPage')}</button>
                 <button
                   className="px-2 py-1 rounded bg-neutral-800 disabled:opacity-50"
                   onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
                   disabled={currentPage === 1}
-                >上一页</button>
+                >{t('games.prevPage')}</button>
                 {/* 页码数字 */}
                 {Array.from({ length: totalPages }, (_, i) => i + 1).slice(Math.max(0, currentPage - 3), currentPage + 2).map(page => (
                   <button
@@ -106,13 +115,13 @@ export default function GameListPage() {
                   className="px-2 py-1 rounded bg-neutral-800 disabled:opacity-50"
                   onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
                   disabled={currentPage === totalPages}
-                >下一页</button>
+                >{t('games.nextPage')}</button>
                 <button
                   className="px-2 py-1 rounded bg-neutral-800 disabled:opacity-50"
                   onClick={() => setCurrentPage(totalPages)}
                   disabled={currentPage === totalPages}
-                >末页</button>
-                <span className="ml-2">第 {currentPage} / {totalPages} 页</span>
+                >{t('games.lastPage')}</button>
+                <span className="ml-2">{t('games.pageInfo', { current: currentPage, total: totalPages })}</span>
               </div>
               <div className="grid grid-cols-1 pd-2 md:grid-cols-2 lg:grid-cols-4 gap-[30px]" style={{paddingRight: '100px'}}>
                 {Array.isArray(pagedGames) && pagedGames.map((g, i) => (
@@ -125,16 +134,15 @@ export default function GameListPage() {
         {/* Developed by... */}
         <div className="w-full px-6 mt-6">
           <section className="bg-neutral-900 rounded-xl p-6 mb-8 w-full flex flex-row gap-[50px]">
-            <h3 className="sr-only">游戏开发与发行信息</h3>
-            <div className="mb-4">Developed by: <b>Raw Fury</b></div>
-            <div>Published by: <b>Raw Fury</b></div>
+            <h3 className="sr-only">{t('games.developerInfo')}</h3>
+            <div className="mb-4">{t('footer.developed_by')} <b>Raw Fury</b></div>
+            <div>{t('footer.published_by')} <b>Raw Fury</b></div>
           </section>
         </div>
         {/* Similar games */}
         <div className="w-full px-6 mt-2">
           <section>
-            <h3 className="text-2xl font-bold mb-6 text-green-500">类似游戏</h3>
-          <SimilarGames genre="Action" />
+            <SimilarGames genre="Action" />
           </section>
         </div>
       </div>

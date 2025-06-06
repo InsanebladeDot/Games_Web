@@ -1,22 +1,69 @@
 'use client'
-import { use } from "react";
+import { useEffect, useState } from "react";
 import GameComments from '@/components/GameComments'
 import GameTips from '@/components/GameTips'
 import GameIntro from '@/components/home/GameIntro'
 import SimilarGames from '@/components/SimilarGames'
 import type { Game } from '@/types/games'
 import GameCard from '@/components/GameCard'
+import { getGameById } from '@/app/api/games';
 
-interface ParamsType {
-  name: string
+type SegmentParams = Record<string, string | string[] | undefined>;
+
+interface ParamsType extends SegmentParams {
+  gameId?: string;
+}
+
+interface GameDetailProps {
+  params?: Promise<ParamsType>;
 }
 
 export default function GameDetail({
-  searchParams
-}: {
-  params: Promise<ParamsType>,
-  searchParams: Promise<Game>
-}) {
+  params
+}: GameDetailProps) {
+  const [gameData, setGameData] = useState<Game | null>(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    async function fetchGameData() {
+      try {
+        setLoading(true);
+        
+        // 从 params 中获取 gameId
+        const gameId = params && await params.then(p => p.gameId);
+        if (gameId) {
+          const response = await getGameById(Number(gameId));
+          if (response.data && response.data.data) {
+            setGameData(response.data.data);
+          }
+        }
+      } catch (error) {
+        console.error('Error fetching game data:', error);
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    fetchGameData();
+  }, [params]);
+
+  // 加载状态
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-black text-white flex items-center justify-center">
+        <div className="text-xl">加载中...</div>
+      </div>
+    );
+  }
+
+  // 如果没有找到游戏数据
+  if (!gameData) {
+    return (
+      <div className="min-h-screen bg-black text-white flex items-center justify-center">
+        <div className="text-xl">未找到游戏数据</div>
+      </div>
+    );
+  }
 
   const { 
     id, 
@@ -31,7 +78,7 @@ export default function GameDetail({
     recommendedVideos, 
     gameIntroduction,
     downloadLink
-  } = use(searchParams);  // mock 数据，实际可根据name查找
+  } = gameData;
   
   return (
     <div className="min-h-screen bg-black text-white">
@@ -40,14 +87,14 @@ export default function GameDetail({
       {/* 主体区域：GameCard + 内嵌游戏 */}
       <div id="game-embed-section" className="w-full flex flex-col md:flex-row px-5 mt-8 items-start">
         <div className="hidden md:block md:min-w-[320px] md:max-w-[360px] md:mr-8">
-          <GameCard {...{id, title, gameUrl, logo, description, genre, releaseDate, developerId, open, recommendedVideos,gameIntroduction,downloadLink}} />
+          <GameCard {...gameData} />
         </div>
         <div className="flex-1 ml-0 md:ml-6 lg:ml-8 flex flex-col justify-center min-h-[600px] w-full" style={{paddingRight: '0px', paddingLeft: '0px'}}>
           {gameUrl && gameUrl !== '' ? (
             <div className="w-full md:w-[90%] lg:w-[85%] xl:w-[80%] mx-auto h-0 pb-[56.25%] md:pb-[50.625%] lg:pb-[47.8125%] xl:pb-[45%] relative">
               <iframe
                 src={gameUrl}
-                title={title}
+                title={title || '游戏'}
                 className="absolute top-0 left-0 w-full h-full rounded-xl border-2 border-neutral-800 bg-black"
                 allowFullScreen
               />
@@ -67,7 +114,7 @@ export default function GameDetail({
               </span>
               Facebook
             </a>
-            <a href={`https://twitter.com/intent/tweet?url=${encodeURIComponent(window.location.href)}&text=${encodeURIComponent(title)}`}
+            <a href={`https://twitter.com/intent/tweet?url=${encodeURIComponent(window.location.href)}&text=${encodeURIComponent(title || '')}`}
                target="_blank"
                rel="noopener noreferrer"
                className="flex-1 bg-[#1DA1F2] hover:bg-[#1a94df] text-white py-3 flex items-center justify-center transition-colors">
@@ -76,7 +123,7 @@ export default function GameDetail({
               </span>
               Twitter
             </a>
-            <a href={`https://www.linkedin.com/shareArticle?mini=true&url=${encodeURIComponent(window.location.href)}&title=${encodeURIComponent(title)}`}
+            <a href={`https://www.linkedin.com/shareArticle?mini=true&url=${encodeURIComponent(window.location.href)}&title=${encodeURIComponent(title || '')}`}
                target="_blank"
                rel="noopener noreferrer"
                className="flex-1 bg-[#0A66C2] hover:bg-[#095bb0] text-white py-3 flex items-center justify-center transition-colors">
@@ -85,7 +132,7 @@ export default function GameDetail({
               </span>
               LinkedIn
             </a>
-            <a href={`https://api.whatsapp.com/send?text=${encodeURIComponent(`${title} ${window.location.href}`)}`}
+            <a href={`https://api.whatsapp.com/send?text=${encodeURIComponent(`${title || ''} ${window.location.href}`)}`}
                target="_blank"
                rel="noopener noreferrer"
                className="flex-1 bg-[#25D366] hover:bg-[#22c35e] text-white py-3 flex items-center justify-center transition-colors">
@@ -94,7 +141,7 @@ export default function GameDetail({
               </span>
               WhatsApp
             </a>
-            <a href={`https://www.reddit.com/submit?url=${encodeURIComponent(window.location.href)}&title=${encodeURIComponent(title)}`}
+            <a href={`https://www.reddit.com/submit?url=${encodeURIComponent(window.location.href)}&title=${encodeURIComponent(title || '')}`}
                target="_blank"
                rel="noopener noreferrer"
                className="flex-1 bg-[#FF4500] hover:bg-[#e63e00] text-white py-3 flex items-center justify-center transition-colors">
@@ -113,16 +160,42 @@ export default function GameDetail({
         <GameComments gameId={id || 0} />
       </div>
       
-      <GameIntro title={title} description={description} recommendedVideos={recommendedVideos} id={null} developerId={null} logo={""} gameUrl={""} genre={genre} open={open} releaseDate={""} gameIntroduction={""} downloadLink={gameUrl} />
+      <GameIntro 
+        title={title || ''} 
+        description={description || ''} 
+        recommendedVideos={recommendedVideos || ''} 
+        id={id || null} 
+        developerId={developerId || null} 
+        logo={logo || ''} 
+        gameUrl={gameUrl || ''} 
+        genre={genre || ''} 
+        open={open || false} 
+        releaseDate={releaseDate || ''} 
+        gameIntroduction={gameIntroduction || ''} 
+        downloadLink={downloadLink || gameUrl || ''} 
+      />
 
       {/* 游戏指南 */}
       <div className="w-full bg-gray-950 py-8 mt-8">
-        <GameTips  gameUrl={gameUrl} downloadLink={downloadLink} id={null} developerId={null} title={""} logo={""} genre={""} open={false} releaseDate={""} description={description} recommendedVideos={""} gameIntroduction={gameIntroduction}/>
+        <GameTips  
+          gameUrl={gameUrl || ''} 
+          downloadLink={downloadLink || ''} 
+          id={id || null} 
+          developerId={developerId || null} 
+          title={title || ''} 
+          logo={logo || ''} 
+          genre={genre || ''} 
+          open={open || false} 
+          releaseDate={releaseDate || ''} 
+          description={description || ''} 
+          recommendedVideos={recommendedVideos || ''} 
+          gameIntroduction={gameIntroduction || ''} 
+        />
       </div>
         
       {/* 其他游戏推荐 */}
       <div className="w-full px-5 mt-8">
-        <SimilarGames title="其他游戏推荐" genre={genre}/>
+        <SimilarGames genre={genre || ''} />
       </div>
     </div>
   )

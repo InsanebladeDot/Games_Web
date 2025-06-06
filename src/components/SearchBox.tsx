@@ -203,12 +203,12 @@ const SearchBox: React.FC<SearchBoxProps> = ({ games: propGames, onSelectGame })
             <div className="px-3 py-2">
               <div className="flex justify-between items-center mb-2">
                 <h3 className="text-sm text-gray-400">{t('searchBox.searchHistory')}</h3>
-                <button 
-                  className="text-xs text-gray-500 hover:text-gray-300"
+                <span 
+                  className="text-xs text-gray-500 hover:text-gray-300 cursor-pointer"
                   onClick={clearHistory}
                 >
                   {t('searchBox.clear')}
-                </button>
+                </span>
               </div>
               {searchHistory.map((item, index) => (
                 <div 
@@ -228,14 +228,14 @@ const SearchBox: React.FC<SearchBoxProps> = ({ games: propGames, onSelectGame })
                     </svg>
                     <span className="text-sm text-white">{item}</span>
                   </div>
-                  <button 
-                    className="text-gray-500 hover:text-gray-300"
+                  <span 
+                    className="text-gray-500 hover:text-gray-300 cursor-pointer"
                     onClick={(e) => removeHistoryItem(e, item)}
                   >
                     <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12"></path>
                     </svg>
-                  </button>
+                  </span>
                 </div>
               ))}
             </div>

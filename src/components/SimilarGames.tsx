@@ -18,12 +18,11 @@ export interface GameItem {
 }
 
 interface SimilarGamesProps {
-  title?: string;
   games?: GameItem[];
   genre?: string;
 }
 
-export default function SimilarGames({ title, genre="Action" }: SimilarGamesProps) {
+export default function SimilarGames({  genre="Action" }: SimilarGamesProps) {
   const rowOneRef = useRef<HTMLDivElement>(null)
   const rowTwoRef = useRef<HTMLDivElement>(null)
   const [radomGames, setRadomGames] = useState<Game[]>([])
@@ -59,7 +58,13 @@ export default function SimilarGames({ title, genre="Action" }: SimilarGamesProp
   }
 
   const handleClick = (props:Game) => {
-    router.push(`/home?id=${props.id}&title=${props.title}&gameUrl=${props.gameUrl}&logo=${props.logo}&description=${props.description}&genre=${props.genre}&releaseDate=${props.releaseDate}&open=${props.open}`)
+    // 获取当前语言
+    const currentLang = lang === 'en' ? 'en' : 'zh';
+    
+    // 使用动态路由而不是查询参数
+    if (props.id) {
+      router.push(`/${currentLang}/game/${props.id}`);
+    }
   }
 
   if (!lang) return null;
@@ -76,8 +81,11 @@ export default function SimilarGames({ title, genre="Action" }: SimilarGamesProp
 
   return (
     <section>
+      <h3 className="text-2xl font-bold mb-6 text-green-500">{ t('similar_games.title')}</h3>
+
       <div className="flex items-center mb-4">
-        <h2 className="flex-1 text-xl font-bold">{title || t('similar_games.title')}</h2>
+        
+        <h2 className="flex-1 text-xl font-bold">{ t('similar_games.title')}</h2>
         <div className="flex space-x-2">
           <button className="bg-neutral-800 text-white rounded-full w-8 h-8 flex items-center justify-center hover:bg-neutral-700" onClick={() => scroll(-1, rowOneRef)}>&lt;</button>
           <button className="bg-neutral-800 text-white rounded-full w-8 h-8 flex items-center justify-center hover:bg-neutral-700" onClick={() => scroll(1, rowOneRef)}>&gt;</button>
@@ -99,7 +107,7 @@ export default function SimilarGames({ title, genre="Action" }: SimilarGamesProp
             onClick={() => handleClick(g)}
           >
             <Image
-              src={g.logo || 'notFund.png'}
+              src={g.logo || '/notFund.png'}
               alt={g.title}
               width={275}
               height={176}
@@ -136,7 +144,7 @@ export default function SimilarGames({ title, genre="Action" }: SimilarGamesProp
             onClick={() => handleClick(g)}
           >
             <Image
-              src={g.logo || 'notFund.png'}
+              src={g.logo || '/notFund.png'}
               alt={g.title}
               width={275}
               height={176}

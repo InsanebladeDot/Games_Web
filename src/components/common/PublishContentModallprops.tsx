@@ -278,7 +278,7 @@ const PublishContentModal: React.FC<PublishContentModalProps> = ({ isOpen, onClo
               <div className="mt-2">
                 <Image
                   src={uploadedImageUrl || 'notFund.png'}
-                  alt="预览图片"
+                  alt={t('publishModal.imagePreview')}
                   width={128}
                   height={128}
                   className="max-h-32 rounded-lg object-cover"

@@ -20,21 +20,14 @@ export default function GameCard(props: Game) {
 
   //卡片点击跳转其他路由逻辑
   const handleClick = () => {
-    const params = new URLSearchParams({
-      id: String(props.id ?? ''),
-      title: props.title ?? '',
-      gameUrl: props.gameUrl ?? '',
-      logo: props.logo ?? '',
-      description: props.description ?? '',
-      genre: props.genre ?? '',
-      releaseDate: props.releaseDate ?? '',
-      open: String(props.open ?? ''),
-      recommendedVideos: props.recommendedVideos ?? '',
-      gameIntroduction: props.gameIntroduction ?? '',
-      downloadLink: props.downloadLink ?? ''
-    });
-  
-    router.push(`/home?${params.toString()}`, { scroll: false });
+    // 获取当前语言
+    const currentLang = typeof window !== 'undefined' && 
+      window.location.pathname.includes('/en') ? 'en' : 'zh';
+    
+    // 使用动态路由而不是查询参数
+    if (props.id) {
+      router.push(`/${currentLang}/game/${props.id}`);
+    }
   }
 
   return (
@@ -53,7 +46,7 @@ export default function GameCard(props: Game) {
             </div>
           )}
           <Image
-            src={props.logo ||'notFund.png'}
+            src={props.logo || '/notFund.png'}
             alt={props.title}
             width={320}
             height={420}

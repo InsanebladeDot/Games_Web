@@ -2,23 +2,52 @@
 import Link from "next/link";
 import Image from 'next/image';
 import { useState, useEffect } from "react";
-import { t, changeLanguage, getCurrentLang, Lang } from "./i18n";
+import { t, changeLanguage, getCurrentLang, Lang, syncLangWithUrl } from "./i18n";
 import SearchBox from "./SearchBox";
+import { useRouter, usePathname } from "next/navigation";
 
 export default function Header() {
   const [lang, setLang] = useState<Lang | undefined>(undefined);
+  const router = useRouter();
+  const pathname = usePathname();
 
   useEffect(() => {
+    // 初始化时同步URL和语言设置
+    syncLangWithUrl();
     setLang(getCurrentLang());
+    
     const handler = () => setLang(getCurrentLang());
     window.addEventListener("langchange", handler);
+    
     return () => window.removeEventListener("langchange", handler);
   }, []);
+
+  // 当URL变化时同步语言设置
+  useEffect(() => {
+    if (pathname) {
+      syncLangWithUrl();
+    }
+  }, [pathname]);
 
   if (!lang) return null;
 
   const handleLangSwitch = () => {
     const next = lang === 'zh' ? 'en' : 'zh';
+    
+    // 构建新的路径
+    let newPath = pathname || '';
+    if (newPath.includes('/zh') || newPath.includes('/en')) {
+      newPath = newPath.replace(/\/(zh|en)/, `/${next}`);
+    } else if (newPath === '/') {
+      newPath = `/${next}`;
+    } else {
+      newPath = `/${next}${newPath}`;
+    }
+    
+    // 使用Next.js路由导航
+    router.push(newPath);
+    
+    // 更新语言状态
     changeLanguage(next);
     setLang(next);
     console.log(`Language switched to: ${next}`);
@@ -28,13 +57,13 @@ export default function Header() {
     <header className="fixed top-0 left-0 w-full z-50 bg-neutral-900 shadow-lg h-16">
       <div className="flex items-center justify-between px-4 md:px-6 lg:px-10 h-full">
         <div className="flex items-center">
-          <Link href="/">
+          <Link href={`/${lang === 'zh' ? 'zh' : 'en'}`}>
             <Image src="https://interfaceingame.com/wp-content/themes/interface-in-game/dist/assets/static/images/logo.svg" alt="logo" width={40} height={40} className="w-10 mr-4 cursor-pointer" unoptimized />
           </Link>
           <nav className="flex items-center">
-            <Link className="mx-2 md:mx-4" href="/gamelist">{t('header.games')}</Link>
-            <Link className="mx-2 md:mx-4" href="/articles">{t('header.articles')}</Link>
-            <Link className="mx-2 md:mx-4" href="/about">{t('header.about')}</Link>
+            <Link className="mx-2 md:mx-4" href={`/${lang === 'zh' ? 'zh' : 'en'}/gamelist`}>{t('header.games')}</Link>
+            <Link className="mx-2 md:mx-4" href={`/${lang === 'zh' ? 'zh' : 'en'}/articles`}>{t('header.articles')}</Link>
+            <Link className="mx-2 md:mx-4" href={`/${lang === 'zh' ? 'zh' : 'en'}/about`}>{t('header.about')}</Link>
           </nav>
           {/* 额外功能以后再扩展 */}
           {/* <div className="hidden md:flex gap-2 ml-10 xl:ml-20 items-center">
@@ -51,7 +80,6 @@ export default function Header() {
         </div>
         <div className="flex items-center gap-2 md:gap-4">
           <SearchBox />
-          <button className="bg-white text-black rounded px-4 py-1">{t('header.mockup')}</button>
           
           {/* 语言切换按钮 */}
           <button
